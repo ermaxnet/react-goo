@@ -1,0 +1,17 @@
+.box {
+    align-items: center;
+    background-color: blue;
+    display: flex;
+    justify-content: center;
+    height: 80px;
+    width: 80px;
+}
+
+.box.box--green {
+    background-color: green;
+}
+
+strong {
+    color: white;
+    text-align: center;
+}
