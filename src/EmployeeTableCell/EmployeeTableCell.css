@@ -1,0 +1,18 @@
+.employee-cell {
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.employee-cell img {
+    border-radius: 50%;
+    margin: 10px 0;
+}
+
+.employee-cell a {
+    color: skyblue;
+    text-decoration: none;
+}
+
+.employee-cell address {
+    padding-right: 48px;
+}

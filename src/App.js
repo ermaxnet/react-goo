@@ -1,5 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Box from "./Box/Box";
+import {
+    Employee,
+    EmployeeName,
+    Location
+} from "./models";
+import EmployeeTable from "./EmployeeTable/EmployeeTable";
 import "./App.css";
 
 const namesDB = [
@@ -9,9 +15,38 @@ const namesDB = [
 ];
 
 export default class App extends Component {
+    total = 5000;
+
     state = {
         names: [ ...namesDB ],
-        acceptedNames: []
+        acceptedNames: [],
+        employees: []
+    }
+
+    componentDidMount() {
+        fetch(`https://randomuser.me/api/?results=${this.total}`, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(response => {
+                const employees = response.results.map(employee => new Employee({
+                    name: new EmployeeName(employee.name),
+                    email: employee.email,
+                    gender: employee.gender,
+                    location: new Location({
+                        city: employee.location.city,
+                        country: employee.location.country,
+                        postcode: String(employee.location.postcode),
+                        state: employee.location.state,
+                        street: employee.location.street.name
+                    }),
+                    thumbnail: employee.picture.thumbnail
+                }));
+
+                this.setState({ employees });
+            });
     }
 
     constructor() {
@@ -58,26 +93,32 @@ export default class App extends Component {
 
     render() {
         return (
-            <div className="container">
-                <div className="boxes boxes--source">
-                    {this.state.names.map(name =>
-                        <Box
-                            key={name}
-                            name={name}
-                            isDraggable={true}
-                            onDragStart={this.dragstart}
-                        />
-                    )}
+            <Fragment>
+                <div className="container">
+                    <div className="boxes boxes--source">
+                        {this.state.names.map(name =>
+                            <Box
+                                key={name}
+                                name={name}
+                                isDraggable={true}
+                                onDragStart={this.dragstart}
+                            />
+                        )}
+                    </div>
+
+                    <button className="reset-button" onClick={this.click}>Reset</button>
+
+                    <div className="boxes boxes--destination" onDragOver={this.dragover} onDrop={this.drop}>
+                        {this.state.acceptedNames.map(name =>
+                            <Box key={name} name={name} isAccepted={true} />
+                        )}
+                    </div>
                 </div>
 
-                <button className="reset-button" onClick={this.click}>Reset</button>
-
-                <div className="boxes boxes--destination" onDragOver={this.dragover} onDrop={this.drop}>
-                    {this.state.acceptedNames.map(name =>
-                        <Box key={name} name={name} isAccepted={true} />
-                    )}
+                <div className="employees-table-container">
+                    <EmployeeTable employees={this.state.employees} />
                 </div>
-            </div>
+            </Fragment>
         );
     }
 }
