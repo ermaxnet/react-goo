@@ -60,4 +60,4 @@ EmployeeTable.propTypes = {
     ).isRequired
 };
 
-export default EmployeeTable;
+export default React.memo(EmployeeTable);
